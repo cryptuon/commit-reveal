@@ -1,0 +1,2 @@
+# Requirements for commit-reveal library
+# No external dependencies required for basic functionality

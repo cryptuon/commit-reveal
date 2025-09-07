@@ -1,0 +1,43 @@
+# pyproject.toml
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "commit-reveal"
+version = "0.1.0"
+description = "A Python library that implements commit-reveal schemes using zero-knowledge proofs"
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [
+    {name = "Dipankar Sarkar", email = "dipankar.sarkar@example.com"},
+]
+keywords = ["cryptography", "commitment", "zero-knowledge", "security"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Security :: Cryptography",
+]
+requires-python = ">=3.7"
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov>=2.0",
+]
+
+[project.scripts]
+commit-reveal = "commit_reveal.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/dipankar/commit-reveal"
+Repository = "https://github.com/dipankar/commit-reveal"
