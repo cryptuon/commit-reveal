@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 """
-CLI tool for the commit-reveal library.
+Legacy CLI tool for the commit-reveal library.
+
+WARNING: This CLI stores values in plaintext and is deprecated for security reasons.
+Use the secure CLI instead: `python -m commit_reveal.secure_cli`
+
+This legacy CLI is maintained only for backwards compatibility.
 """
 
 import argparse
@@ -94,10 +99,19 @@ def delete_commitment(name):
 
 
 def main():
+    # Security warning for legacy CLI
+    print("⚠️  WARNING: You are using the legacy CLI that stores values in plaintext!")
+    print("   For production use, switch to the secure CLI:")
+    print("   python -m commit_reveal.secure_cli")
+    print("   Or use the migration tool: python -m commit_reveal.migrate")
+    print()
+
     parser = argparse.ArgumentParser(
-        description="Commit-Reveal CLI tool",
+        description="Legacy Commit-Reveal CLI tool (DEPRECATED)",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
+⚠️  SECURITY WARNING: This CLI stores values in plaintext!
+
 Examples:
   commit-reveal commit my-secret "This is my secret"
   commit-reveal reveal my-secret "This is my secret"
@@ -106,6 +120,10 @@ Examples:
   commit-reveal --zkp commit my-secret "This is my secret"
   commit-reveal --zkp prove my-secret
   commit-reveal --zkp verify-proof my-secret
+
+RECOMMENDED: Use the secure CLI instead:
+  python -m commit_reveal.secure_cli commit my-secret
+  python -m commit_reveal.secure_cli reveal my-secret
         """
     )
     

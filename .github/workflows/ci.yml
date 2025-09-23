@@ -1,0 +1,366 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  release:
+    types: [ published ]
+
+env:
+  PYTHON_DEFAULT_VERSION: "3.11"
+
+jobs:
+  test:
+    name: Test Python ${{ matrix.python-version }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install Poetry
+      uses: snok/install-poetry@v1
+      with:
+        version: latest
+        virtualenvs-create: true
+        virtualenvs-in-project: true
+
+    - name: Cache Poetry dependencies
+      uses: actions/cache@v3
+      with:
+        path: .venv
+        key: ${{ runner.os }}-poetry-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-poetry-${{ matrix.python-version }}-
+
+    - name: Install dependencies
+      run: |
+        poetry install --with dev
+
+    - name: Run tests with pytest
+      run: |
+        poetry run pytest tests/ -v --cov=commit_reveal --cov-report=xml --cov-report=term-missing
+
+    - name: Upload coverage reports
+      if: matrix.python-version == env.PYTHON_DEFAULT_VERSION && matrix.os == 'ubuntu-latest'
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+
+  security:
+    name: Security Analysis
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_DEFAULT_VERSION }}
+
+    - name: Install Poetry
+      uses: snok/install-poetry@v1
+      with:
+        version: latest
+        virtualenvs-create: true
+        virtualenvs-in-project: true
+
+    - name: Install dependencies
+      run: |
+        poetry install --with dev
+
+    - name: Run Bandit security linter
+      run: |
+        poetry run bandit -r commit_reveal/ -f json -o bandit-report.json
+        poetry run bandit -r commit_reveal/ -f txt
+
+    - name: Run Safety vulnerability scanner
+      run: |
+        poetry run safety check --json --output safety-report.json
+        poetry run safety check
+
+    - name: Upload security reports
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: security-reports
+        path: |
+          bandit-report.json
+          safety-report.json
+
+  code-quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_DEFAULT_VERSION }}
+
+    - name: Install Poetry
+      uses: snok/install-poetry@v1
+      with:
+        version: latest
+        virtualenvs-create: true
+        virtualenvs-in-project: true
+
+    - name: Install dependencies
+      run: |
+        poetry install --with dev
+
+    - name: Run Black formatter check
+      run: |
+        poetry run black --check --diff commit_reveal/ tests/
+
+    - name: Run Flake8 linter
+      run: |
+        poetry run flake8 commit_reveal/ tests/ --statistics
+
+    - name: Run MyPy type checker
+      run: |
+        poetry run mypy commit_reveal/ --strict --show-error-codes
+
+  performance:
+    name: Performance Benchmarks
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_DEFAULT_VERSION }}
+
+    - name: Install Poetry
+      uses: snok/install-poetry@v1
+      with:
+        version: latest
+        virtualenvs-create: true
+        virtualenvs-in-project: true
+
+    - name: Install dependencies
+      run: |
+        poetry install --with dev
+
+    - name: Run performance tests
+      run: |
+        poetry run pytest tests/test_performance.py -v -m performance --tb=short
+
+    - name: Upload performance results
+      uses: actions/upload-artifact@v3
+      with:
+        name: performance-results
+        path: performance-results.json
+
+  integration:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_DEFAULT_VERSION }}
+
+    - name: Install Poetry
+      uses: snok/install-poetry@v1
+      with:
+        version: latest
+        virtualenvs-create: true
+        virtualenvs-in-project: true
+
+    - name: Install dependencies
+      run: |
+        poetry install --with dev
+
+    - name: Test CLI installation
+      run: |
+        # Test that CLIs are properly installed
+        poetry run python -m commit_reveal.secure_cli --help
+        poetry run python -m commit_reveal.migrate --help
+
+    - name: Test CLI functionality
+      run: |
+        # Test basic CLI operations
+        echo "test_value" | poetry run python -m commit_reveal.secure_cli commit test-integration
+        echo "test_value" | poetry run python -m commit_reveal.secure_cli reveal test-integration
+        poetry run python -m commit_reveal.secure_cli list
+        echo "y" | poetry run python -m commit_reveal.secure_cli delete test-integration
+
+    - name: Test ZKP CLI functionality
+      run: |
+        # Test ZKP operations
+        echo "zkp_test_value" | poetry run python -m commit_reveal.secure_cli --zkp commit test-zkp
+        poetry run python -m commit_reveal.secure_cli --zkp verify-proof test-zkp
+        poetry run python -m commit_reveal.secure_cli list
+        echo "y" | poetry run python -m commit_reveal.secure_cli delete test-zkp
+
+  documentation:
+    name: Documentation
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_DEFAULT_VERSION }}
+
+    - name: Install Poetry
+      uses: snok/install-poetry@v1
+      with:
+        version: latest
+        virtualenvs-create: true
+        virtualenvs-in-project: true
+
+    - name: Install dependencies
+      run: |
+        poetry install --with dev
+        poetry add --group dev sphinx sphinx-rtd-theme
+
+    - name: Check docstrings
+      run: |
+        python -c "
+        import commit_reveal
+        import inspect
+
+        # Check that all public functions have docstrings
+        for name in dir(commit_reveal.CommitRevealScheme):
+            if not name.startswith('_'):
+                method = getattr(commit_reveal.CommitRevealScheme, name)
+                if callable(method) and not method.__doc__:
+                    raise ValueError(f'Method {name} missing docstring')
+        print('All public methods have docstrings')
+        "
+
+    - name: Generate API documentation
+      run: |
+        mkdir -p docs/api
+        python -c "
+        import commit_reveal
+        import inspect
+
+        # Generate simple API docs
+        with open('docs/api/api.md', 'w') as f:
+            f.write('# API Documentation\\n\\n')
+            f.write('## CommitRevealScheme\\n\\n')
+            for name in dir(commit_reveal.CommitRevealScheme):
+                if not name.startswith('_'):
+                    method = getattr(commit_reveal.CommitRevealScheme, name)
+                    if callable(method):
+                        f.write(f'### {name}\\n\\n')
+                        if method.__doc__:
+                            f.write(method.__doc__)
+                        f.write('\\n\\n')
+        "
+
+    - name: Upload documentation
+      uses: actions/upload-artifact@v3
+      with:
+        name: documentation
+        path: docs/
+
+  build:
+    name: Build Package
+    runs-on: ubuntu-latest
+    needs: [test, security, code-quality]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_DEFAULT_VERSION }}
+
+    - name: Install Poetry
+      uses: snok/install-poetry@v1
+      with:
+        version: latest
+        virtualenvs-create: true
+        virtualenvs-in-project: true
+
+    - name: Build package
+      run: |
+        poetry build
+
+    - name: Check package
+      run: |
+        poetry run pip install twine
+        poetry run twine check dist/*
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: dist
+        path: dist/
+
+  release:
+    name: Release to PyPI
+    runs-on: ubuntu-latest
+    needs: [build, integration, performance]
+    if: github.event_name == 'release' && github.event.action == 'published'
+    environment: release
+
+    steps:
+    - name: Download build artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: dist
+        path: dist/
+
+    - name: Publish to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        password: ${{ secrets.PYPI_API_TOKEN }}
+
+  notify:
+    name: Notify Status
+    runs-on: ubuntu-latest
+    needs: [test, security, code-quality, performance, integration, documentation, build]
+    if: always()
+
+    steps:
+    - name: Notify success
+      if: ${{ needs.test.result == 'success' && needs.security.result == 'success' && needs.code-quality.result == 'success' }}
+      run: |
+        echo "✅ All CI checks passed successfully!"
+
+    - name: Notify failure
+      if: ${{ needs.test.result == 'failure' || needs.security.result == 'failure' || needs.code-quality.result == 'failure' }}
+      run: |
+        echo "❌ CI checks failed. Please review the results."
+        exit 1

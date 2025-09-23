@@ -1,3 +1,0 @@
-# Development requirements for commit-reveal library
-pytest>=6.0
-pytest-cov>=2.0

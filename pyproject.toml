@@ -1,43 +1,191 @@
-# pyproject.toml
-[build-system]
-requires = ["setuptools>=45", "wheel"]
-build-backend = "setuptools.build_meta"
-
-[project]
+[tool.poetry]
 name = "commit-reveal"
-version = "0.1.0"
-description = "A Python library that implements commit-reveal schemes using zero-knowledge proofs"
+version = "1.0.0"
+description = "A production-ready Python library implementing commit-reveal schemes with zero-knowledge proofs"
+authors = ["Dipankar Sarkar <dipankar.sarkar@example.com>"]
+license = "MIT"
 readme = "README.md"
-license = {file = "LICENSE"}
-authors = [
-    {name = "Dipankar Sarkar", email = "dipankar.sarkar@example.com"},
-]
-keywords = ["cryptography", "commitment", "zero-knowledge", "security"]
+homepage = "https://github.com/dipankar/commit-reveal"
+repository = "https://github.com/dipankar/commit-reveal"
+documentation = "https://github.com/dipankar/commit-reveal#readme"
+keywords = ["cryptography", "commitment", "zero-knowledge", "security", "zkp", "schnorr"]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Topic :: Security :: Cryptography",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
 ]
-requires-python = ">=3.7"
-dependencies = []
+packages = [{include = "commit_reveal"}]
 
-[project.optional-dependencies]
-dev = [
-    "pytest>=6.0",
-    "pytest-cov>=2.0",
-]
+[tool.poetry.dependencies]
+python = "^3.8"
 
-[project.scripts]
+[tool.poetry.group.dev.dependencies]
+# Testing
+pytest = "^7.0"
+pytest-cov = "^4.0"
+pytest-xdist = "^3.0"
+hypothesis = "^6.0"
+coverage = "^7.0"
+
+# Code quality
+black = "^22.0"
+isort = "^5.0"
+flake8 = "^5.0"
+flake8-docstrings = "^1.6"
+flake8-bugbear = "^22.0"
+flake8-comprehensions = "^3.0"
+flake8-simplify = "^0.19"
+mypy = "^1.0"
+
+# Security
+bandit = "^1.7"
+safety = "^2.0"
+
+# Development tools
+pre-commit = "^3.0"
+pydocstyle = "^6.0"
+yamllint = "^1.32"
+detect-secrets = "^1.4"
+
+[tool.poetry.scripts]
 commit-reveal = "commit_reveal.cli:main"
+commit-reveal-secure = "commit_reveal.secure_cli:main"
+commit-reveal-migrate = "commit_reveal.migrate:main"
 
-[project.urls]
-Homepage = "https://github.com/dipankar/commit-reveal"
-Repository = "https://github.com/dipankar/commit-reveal"
+[tool.poetry.urls]
+"Bug Tracker" = "https://github.com/dipankar/commit-reveal/issues"
+"Security Policy" = "https://github.com/dipankar/commit-reveal/security/policy"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+# Tool configurations
+[tool.black]
+line-length = 88
+target-version = ['py38', 'py39', 'py310', 'py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["commit_reveal"]
+known_third_party = ["pytest", "hypothesis"]
+
+[tool.mypy]
+python_version = "3.8"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-v",
+    "--strict-markers",
+    "--strict-config",
+    "--tb=short",
+    "--cov=commit_reveal",
+    "--cov-report=term-missing",
+    "--cov-report=html:htmlcov",
+    "--cov-report=xml",
+    "--cov-fail-under=90"
+]
+filterwarnings = [
+    "error",
+    "ignore::UserWarning",
+    "ignore::DeprecationWarning:hypothesis.*"
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "security: marks tests as security-focused",
+    "performance: marks tests as performance benchmarks",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests"
+]
+
+[tool.coverage.run]
+source = ["commit_reveal"]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "setup.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+
+[tool.bandit]
+exclude_dirs = ["tests", "build", "dist"]
+skips = ["B101"]  # Skip assert_used test
+
+[tool.flake8]
+max-line-length = 88
+extend-ignore = ["E203", "W503", "E501"]
+exclude = [
+    ".git",
+    "__pycache__",
+    "docs/source/conf.py",
+    "old",
+    "build",
+    "dist",
+    ".venv",
+    ".eggs",
+    "*.egg",
+]
+per-file-ignores = [
+    "__init__.py:F401",
+    "tests/*:D103,D104",
+]
+
+[tool.pydocstyle]
+convention = "google"
+add_ignore = ["D100", "D104"]
