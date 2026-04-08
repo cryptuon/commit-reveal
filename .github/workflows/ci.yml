@@ -247,50 +247,11 @@ jobs:
 
     - name: Install dependencies
       run: |
-        poetry install --with dev
-        poetry add --group dev sphinx sphinx-rtd-theme
+        poetry install --with dev,docs
 
-    - name: Check docstrings
+    - name: Build documentation
       run: |
-        python -c "
-        import commit_reveal
-        import inspect
-
-        # Check that all public functions have docstrings
-        for name in dir(commit_reveal.CommitRevealScheme):
-            if not name.startswith('_'):
-                method = getattr(commit_reveal.CommitRevealScheme, name)
-                if callable(method) and not method.__doc__:
-                    raise ValueError(f'Method {name} missing docstring')
-        print('All public methods have docstrings')
-        "
-
-    - name: Generate API documentation
-      run: |
-        mkdir -p docs/api
-        python -c "
-        import commit_reveal
-        import inspect
-
-        # Generate simple API docs
-        with open('docs/api/api.md', 'w') as f:
-            f.write('# API Documentation\\n\\n')
-            f.write('## CommitRevealScheme\\n\\n')
-            for name in dir(commit_reveal.CommitRevealScheme):
-                if not name.startswith('_'):
-                    method = getattr(commit_reveal.CommitRevealScheme, name)
-                    if callable(method):
-                        f.write(f'### {name}\\n\\n')
-                        if method.__doc__:
-                            f.write(method.__doc__)
-                        f.write('\\n\\n')
-        "
-
-    - name: Upload documentation
-      uses: actions/upload-artifact@v3
-      with:
-        name: documentation
-        path: docs/
+        poetry run mkdocs build --strict
 
   build:
     name: Build Package
