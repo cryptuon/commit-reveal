@@ -1,0 +1,99 @@
+site_name: commit-reveal
+site_url: https://cryptuon.github.io/commit-reveal/
+site_description: Cryptographic commit-reveal schemes with zero-knowledge proofs. Pure Python. Zero dependencies.
+site_author: Dipankar Sarkar
+repo_url: https://github.com/cryptuon/commit-reveal
+repo_name: cryptuon/commit-reveal
+edit_uri: edit/main/documentation/
+
+docs_dir: documentation
+site_dir: site
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - content.code.copy
+    - content.code.annotate
+    - search.suggest
+    - search.highlight
+    - toc.follow
+  icon:
+    repo: fontawesome/brands/github
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - API Reference: api-reference.md
+  - CLI: cli.md
+  - Use Cases:
+    - use-cases/index.md
+    - Auctions: use-cases/auctions.md
+    - Voting: use-cases/voting.md
+    - Gaming: use-cases/gaming.md
+    - Blockchain: use-cases/blockchain.md
+    - Multi-Party Computation: use-cases/multi-party.md
+  - Security:
+    - security/index.md
+    - Best Practices: security/best-practices.md
+    - Audit Trail: security/audit-trail.md
+  - Advanced:
+    - Hash Algorithms: advanced/hash-algorithms.md
+    - ZKP Internals: advanced/zkp-internals.md
+    - Error Handling: advanced/error-handling.md
+  - Changelog: changelog.md
+  - Contributing: contributing.md
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.details
+  - admonition
+  - tables
+  - toc:
+      permalink: true
+  - attr_list
+  - md_in_html
+  - def_list
+  - pymdownx.tasklist:
+      custom_checkbox: true
+
+plugins:
+  - search
+  - minify:
+      minify_html: true
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/cryptuon/commit-reveal
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/commit-reveal/
+
+copyright: Copyright &copy; 2025 Dipankar Sarkar
