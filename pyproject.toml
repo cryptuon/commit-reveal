@@ -2,12 +2,12 @@
 name = "commit-reveal"
 version = "1.0.0"
 description = "A production-ready Python library implementing commit-reveal schemes with zero-knowledge proofs"
-authors = ["Dipankar Sarkar <dipankar.sarkar@example.com>"]
+authors = ["Dipankar Sarkar <me@dipankar.name>"]
 license = "MIT"
 readme = "README.md"
-homepage = "https://github.com/dipankar/commit-reveal"
-repository = "https://github.com/dipankar/commit-reveal"
-documentation = "https://github.com/dipankar/commit-reveal#readme"
+homepage = "https://github.com/cryptuon/commit-reveal"
+repository = "https://github.com/cryptuon/commit-reveal"
+documentation = "https://cryptuon.github.io/commit-reveal/"
 keywords = ["cryptography", "commitment", "zero-knowledge", "security", "zkp", "schnorr"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -57,14 +57,22 @@ pydocstyle = "^6.0"
 yamllint = "^1.32"
 detect-secrets = "^1.4"
 
+[tool.poetry.group.docs]
+optional = true
+
+[tool.poetry.group.docs.dependencies]
+mkdocs = "^1.5"
+mkdocs-material = "^9.5"
+mkdocs-minify-plugin = "^0.7"
+
 [tool.poetry.scripts]
 commit-reveal = "commit_reveal.cli:main"
 commit-reveal-secure = "commit_reveal.secure_cli:main"
 commit-reveal-migrate = "commit_reveal.migrate:main"
 
 [tool.poetry.urls]
-"Bug Tracker" = "https://github.com/dipankar/commit-reveal/issues"
-"Security Policy" = "https://github.com/dipankar/commit-reveal/security/policy"
+"Bug Tracker" = "https://github.com/cryptuon/commit-reveal/issues"
+"Security Policy" = "https://github.com/cryptuon/commit-reveal/security/policy"
 
 [build-system]
 requires = ["poetry-core"]
