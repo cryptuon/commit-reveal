@@ -1,5 +1,5 @@
 site_name: commit-reveal
-site_url: https://commit-reveal.docs.cryptuon.com/
+site_url: https://docs.cryptuon.com/commit-reveal/
 site_description: Cryptographic commit-reveal schemes with zero-knowledge proofs. Pure Python. Zero dependencies.
 site_author: Dipankar Sarkar
 repo_url: https://github.com/cryptuon/commit-reveal
