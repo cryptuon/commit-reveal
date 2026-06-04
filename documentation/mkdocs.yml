@@ -7,7 +7,7 @@ repo_name: cryptuon/commit-reveal
 edit_uri: edit/main/documentation/
 
 docs_dir: .
-site_dir: site
+site_dir: ../_site
 
 theme:
   name: material
