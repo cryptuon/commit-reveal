@@ -6,7 +6,7 @@ repo_url: https://github.com/cryptuon/commit-reveal
 repo_name: cryptuon/commit-reveal
 edit_uri: edit/main/documentation/
 
-docs_dir: documentation
+docs_dir: .
 site_dir: site
 
 theme:
