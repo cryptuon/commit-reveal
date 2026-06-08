@@ -29,7 +29,9 @@ theme:
   features:
     - navigation.instant
     - navigation.tracking
+    - navigation.tabs
     - navigation.sections
+    - navigation.indexes
     - navigation.expand
     - navigation.top
     - content.code.copy
@@ -42,26 +44,28 @@ theme:
 
 nav:
   - Home: index.md
-  - Getting Started: getting-started.md
+  - Docs:
+      - Getting Started: getting-started.md
+      - Use Cases:
+          - use-cases/index.md
+          - Auctions: use-cases/auctions.md
+          - Voting: use-cases/voting.md
+          - Gaming: use-cases/gaming.md
+          - Blockchain: use-cases/blockchain.md
+          - Multi-Party Computation: use-cases/multi-party.md
+      - Security:
+          - security/index.md
+          - Best Practices: security/best-practices.md
+          - Audit Trail: security/audit-trail.md
+      - Advanced:
+          - Hash Algorithms: advanced/hash-algorithms.md
+          - ZKP Internals: advanced/zkp-internals.md
+          - Error Handling: advanced/error-handling.md
   - API Reference: api-reference.md
   - CLI: cli.md
-  - Use Cases:
-    - use-cases/index.md
-    - Auctions: use-cases/auctions.md
-    - Voting: use-cases/voting.md
-    - Gaming: use-cases/gaming.md
-    - Blockchain: use-cases/blockchain.md
-    - Multi-Party Computation: use-cases/multi-party.md
-  - Security:
-    - security/index.md
-    - Best Practices: security/best-practices.md
-    - Audit Trail: security/audit-trail.md
-  - Advanced:
-    - Hash Algorithms: advanced/hash-algorithms.md
-    - ZKP Internals: advanced/zkp-internals.md
-    - Error Handling: advanced/error-handling.md
-  - Changelog: changelog.md
-  - Contributing: contributing.md
+  - Project:
+      - Changelog: changelog.md
+      - Contributing: contributing.md
 
 markdown_extensions:
   - pymdownx.highlight:
