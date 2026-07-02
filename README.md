@@ -11,6 +11,8 @@
 [![type-checked: mypy](https://img.shields.io/badge/type--checked-mypy%20strict-blue)](https://mypy-lang.org/)
 [![security: bandit](https://img.shields.io/badge/security-bandit-yellow)](https://github.com/PyCQA/bandit)
 
+**[🌐 Site](https://commit-reveal.cryptuon.com/) · [📚 Docs](https://docs.cryptuon.com/commit-reveal/) · [📦 PyPI package](https://pypi.org/project/commit-reveal/) · [🔬 Cryptuon Research](https://github.com/cryptuon)**
+
 ---
 
 ## Highlights
@@ -111,7 +113,7 @@ class CommitRevealScheme:
 
 **Exceptions:** `ValidationError` for invalid input, `SecurityError` for insecure operations (e.g., MD5/SHA-1).
 
-Full API reference: [documentation](https://cryptuon.github.io/commit-reveal/api-reference/)
+Full API reference: [documentation](https://docs.cryptuon.com/commit-reveal/api-reference/)
 
 ## CLI Tools
 
@@ -130,12 +132,12 @@ commit-reveal-secure --zkp verify-proof my-secret
 
 ## Documentation
 
-Full documentation available at [cryptuon.github.io/commit-reveal](https://cryptuon.github.io/commit-reveal/).
+Full documentation available at [docs.cryptuon.com/commit-reveal](https://docs.cryptuon.com/commit-reveal/).
 
-- [Getting Started](https://cryptuon.github.io/commit-reveal/getting-started/)
-- [API Reference](https://cryptuon.github.io/commit-reveal/api-reference/)
-- [Use Cases](https://cryptuon.github.io/commit-reveal/use-cases/) (auctions, voting, gaming, blockchain)
-- [Security Guide](https://cryptuon.github.io/commit-reveal/security/)
+- [Getting Started](https://docs.cryptuon.com/commit-reveal/getting-started/)
+- [API Reference](https://docs.cryptuon.com/commit-reveal/api-reference/)
+- [Use Cases](https://docs.cryptuon.com/commit-reveal/use-cases/) (auctions, voting, gaming, blockchain)
+- [Security Guide](https://docs.cryptuon.com/commit-reveal/security/)
 
 ## Development
 
@@ -163,3 +165,13 @@ See [SECURITY.md](SECURITY.md) for the full security policy, threat model, and v
 ## License
 
 [MIT](LICENSE) &copy; 2025 Dipankar Sarkar
+
+---
+
+## Part of Cryptuon Research
+
+`commit-reveal` is one of [20 open-source blockchain-infrastructure projects](https://www.cryptuon.com/projects) from **[Cryptuon Research](https://www.cryptuon.com)** — blockchain theory, shipped as protocols.
+
+**Related projects:** [blockchain-compression](https://blockchain-compression.cryptuon.com/) · [StxScript](https://stxscript.cryptuon.com/) · [nklave](https://nklave.cryptuon.com/)
+
+Docs: [docs.cryptuon.com/commit-reveal](https://docs.cryptuon.com/commit-reveal/) · Contact: [contact@cryptuon.com](mailto:contact@cryptuon.com)

@@ -2,12 +2,12 @@
 name = "commit-reveal"
 version = "1.0.0"
 description = "A production-ready Python library implementing commit-reveal schemes with zero-knowledge proofs"
-authors = ["Dipankar Sarkar <me@dipankar.name>"]
+authors = ["Cryptuon Research <contact@cryptuon.com>"]
 license = "MIT"
 readme = "README.md"
-homepage = "https://github.com/cryptuon/commit-reveal"
+homepage = "https://commit-reveal.cryptuon.com/"
 repository = "https://github.com/cryptuon/commit-reveal"
-documentation = "https://cryptuon.github.io/commit-reveal/"
+documentation = "https://docs.cryptuon.com/commit-reveal/"
 keywords = ["cryptography", "commitment", "zero-knowledge", "security", "zkp", "schnorr"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
