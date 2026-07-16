@@ -1,6 +1,6 @@
 # commit-reveal
 
-**Cryptographic commit-reveal schemes with zero-knowledge proofs. Pure Python. Zero dependencies.**
+**A fairness primitive for the agent economy: commit-reveal schemes with Schnorr zero-knowledge proofs. Pure Python. Zero dependencies.**
 
 [![PyPI version](https://img.shields.io/pypi/v/commit-reveal)](https://pypi.org/project/commit-reveal/)
 [![Python versions](https://img.shields.io/pypi/pyversions/commit-reveal)](https://pypi.org/project/commit-reveal/)
@@ -11,9 +11,23 @@
 [![type-checked: mypy](https://img.shields.io/badge/type--checked-mypy%20strict-blue)](https://mypy-lang.org/)
 [![security: bandit](https://img.shields.io/badge/security-bandit-yellow)](https://github.com/PyCQA/bandit)
 
-**[🌐 Site](https://commit-reveal.cryptuon.com/) · [📚 Docs](https://docs.cryptuon.com/commit-reveal/) · [📦 PyPI package](https://pypi.org/project/commit-reveal/) · [🔬 Cryptuon Research](https://github.com/cryptuon)**
+**[🌐 Site](https://commit-reveal.cryptuon.com/) · [📚 Docs](https://docs.cryptuon.com/commit-reveal/) · [📦 PyPI package](https://pypi.org/project/commit-reveal/) · [🗺️ Roadmap](ROADMAP.md) · [🔬 Cryptuon Research](https://github.com/cryptuon)**
 
 ---
+
+## Why this matters in 2026
+
+Most of the money lost or extracted on public chains comes from one root cause: **someone sees your action before it is final and reacts to it.** Front-running, sandwich attacks, copy-trading bots, and oracle games are all timing attacks on information that leaked too early. Commit-reveal is the oldest, smallest, most auditable fix for that class of problem — you *bind* to a value now and *announce* it later, so nobody can act on what they cannot yet see.
+
+That primitive is having a moment. The narratives driving crypto in 2026 — **agentic payments, verifiable on-chain AI, prediction markets, MEV mitigation, and intent-based DEXs** — all need cheap, verifiable fairness at their core:
+
+- **Anti-MEV / fair ordering** — order intents commit during a sealed window, then reveal for matching. Front-runners cannot react to orders they have not yet seen.
+- **Sealed-bid auctions** — bidders publish commitments; nobody, not even the auctioneer, reads a bid before the reveal deadline. The natural settlement layer for RWA and NFT auctions.
+- **Commit-reveal randomness** — many parties commit to seeds, then reveal; the result is a hash of all reveals, uniform and unmanipulable as long as one participant is honest.
+- **Verifiable AI** — in networks where independent agents (e.g. DFPN-style inference or forecasting nodes) must submit answers *without copying each other*, each agent commits to its output first and reveals after the window closes. The Schnorr ZKP then lets an agent prove "this reveal matches my commitment" without re-broadcasting the payload.
+- **Prediction-market resolution** — resolvers commit to an outcome before it is public, removing the last-look advantage.
+
+`commit-reveal` is a **small, dependency-free primitive** you drop into that infrastructure. It is a **library, not a network** — it computes and verifies commitments and proofs; it does not run consensus, hold funds, or settle on-chain by itself. What ships on-chain is your choice: the reference path to a minimal on-chain verifier is laid out in [ROADMAP.md](ROADMAP.md#cheapest-path-to-production).
 
 ## Highlights
 
@@ -129,6 +143,20 @@ Enable ZKP for any command with `--zkp`:
 commit-reveal-secure --zkp commit my-secret
 commit-reveal-secure --zkp verify-proof my-secret
 ```
+
+## Where this fits in 2026 infrastructure
+
+| Narrative | The unfairness it removes | How commit-reveal helps |
+|-----------|---------------------------|-------------------------|
+| **MEV mitigation / fair ordering** | Searchers front-run and sandwich pending transactions | Commit intents in a sealed window; reveal for matching. No peeking, no reordering advantage. |
+| **Verifiable on-chain AI** | Agents copy each other's answers instead of computing independently | Each agent commits to its output first; reveals after the window; proves consistency with a Schnorr ZKP. |
+| **Sealed-bid auctions (RWA, NFTs)** | Late bidders read earlier bids | Bids are commitments until the deadline; the auctioneer cannot read them either. |
+| **On-chain randomness** | A single party biases the seed | Multi-party commit-reveal RNG; honest-minority safe. |
+| **Prediction-market resolution** | Resolvers exploit last-look information | Resolvers commit to an outcome before it is public. |
+
+For the full "where it fits and how to get to production" picture, see **[ROADMAP.md](ROADMAP.md)**.
+
+> **Scope, stated plainly:** commit-reveal is a *primitive library*, not a sequencer, a mempool, or an L2. It gives you the cryptographic core (bind, reveal, prove) that fairness-preserving systems are built from. The system design — who commits, when the window closes, where reveals are posted — is yours.
 
 ## Documentation
 
